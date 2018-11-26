@@ -1,0 +1,17 @@
+import threading.paramiko,socket,sys
+
+host_keys=paramiko.RSAKey(filenames='test_rsa.key')
+
+class Server(paramiko.ServerInterface):
+    def __init__(self):
+        self.event=threading.Event()
+    
+    def check_channel_request(self,kind,chanid):
+        if kind=='session':
+
+            return paramiko.OPEN_SUCCESSED
+
+        return paramiko.OPEN_FAILED_ADMINISTRATIVELY_PROHIBITED
+
+    def check_auth_password(self,username,password):
+        if()
