@@ -29,6 +29,18 @@ class IP(Structure):
         except:
             self.protocol=str(self.protocol_num)
 
+class ICMP(Structure):
+    _field_=[
+            ('type',c_uint8),
+            ('code',c_uint8),
+            ('checksum',c_uint16),
+            ('unused',c_uint16),
+            ('next_hop_mtu',c_uint16)]
+    def __new__(self,socket_buffer):
+        return self.from_buffer_copy(socket_buffer)
+    def __init__(self,socket_buffer):
+        pass
+    
 if os.name=='nt':
     
     socket.protocol=socket.IPPROTO_IP
@@ -48,20 +60,16 @@ try:
         ip_header=IP(raw_buffer[0:20])
         print("Protocol:{} {} -> {}".format(ip_header.protocol,ip_header.src_address,ip_header.dst_address))
 
+if ip_header.protocol=='ICMP':
+    offset=ip_header.ihl=4
+    buf=raw_buffer[offset:offset+sizeof(TCMP)]
+
+    icmp_header=ICMP(buf)
+    print("ICMP -> Type:{} Code:{}".format(icmp_header.type,icmp_header.code))
+
 except KeyboardInterrupt:
     if os_name=='nt':
         sniffer.ioctl(socket.SIO_RCVALL,socket.RCVALL_OFF)
 
 
-class ICMP(Structure):
-    _field_=[
-            ('type',c_uint8),
-            ('code',c_uint8),
-            ('checksum',c_uint16),
-            ('unused',c_uint16),
-            ('next_hop_mtu',c_uint16)]
-    def __new__(self,socket_buffer):
-        return self.from_buffer_copy(socket_buffer)
-    def __init__(self,socket_buffer):
-        pass
 
