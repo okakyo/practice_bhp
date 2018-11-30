@@ -16,3 +16,23 @@ for r,d,f in os.walk():
         if os.path.splittext(files)[1] not in filters:
             web_paths.put(remote_path)
 
+def test_remote():
+    while not web_paths.empty():
+        path=web_paths.get()
+        url="{}{}".format(target,path)
+        request=requests.get(url)
+
+        try:
+            response=requests.urlopen(request)
+            content=response.read()
+
+            print()
+            response.close()
+
+        except requests.HTTPError as err:
+            pass
+
+    for i in range(threads):
+        print()
+        t=threading.Thread()
+        t.start()

@@ -8,7 +8,7 @@ filters="['jpgs','gif','png','css']"
 os.chdir(directory)
 web_parser=Queue.Queue()
 
-for r,d,f in os.walk():
+for r,d,f in os.walk("."):
     for files in f:
         remote_path='{}/{}'.format(r,files)
         if remote_path.startswith('.'):
@@ -20,16 +20,14 @@ def test_remote():
     while not web_paths.empty():
         path=web_paths.get()
         url="{}{}".format(target,path)
-        request=requests.get(url)
 
         try:
-            response=requests.urlopen(request)
-            content=response.read()
-
-            print()
+            response=requests.get(url)
+            print("[{}] => {}".format(response.status_code,path))
             response.close()
 
         except requests.HTTPError as err:
+            print("Failed:{}".format(err.code))
             pass
 
     for i in range(threads):

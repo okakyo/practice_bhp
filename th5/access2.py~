@@ -7,4 +7,4 @@ headers['User-Agent']='Googlebot'
 
 request=requests.get(url,headers=headers)
 
-print(request.content)
+print(request.encoding)
